@@ -411,7 +411,7 @@
         </div>
     </div>
 
-    <div class="status" id="statusText">Sua vez (☀️)</div>
+    <div class="status" id="statusText">Sua vez (🌙)</div>
 
     <div class="container">
         <div class="board" id="board">
@@ -444,8 +444,9 @@
         const canvas = document.getElementById('easterEggCanvas');
         const ctx = canvas.getContext('2d');
 
-        const HUMAN = 'sol';
-        const AI = 'lua';
+        // HUMAN = jogador humano (Lua), AI = IA (Sol)
+        const HUMAN = 'lua';
+        const AI = 'sol';
         let gameState = ["", "", "", "", "", "", "", "", ""];
         let isGameActive = true;
         let isAIThinking = false;
@@ -507,10 +508,14 @@
             for (let i = 0; i < 50; i++) {
                 createStar();
             }
+
+            // Iniciar animação
+            animateParticles();
         }
 
         function createConfetti() {
             const confetti = {
+                type: 'confetti',
                 x: Math.random() * window.innerWidth,
                 y: -10,
                 vx: (Math.random() - 0.5) * 8,
@@ -525,15 +530,15 @@
 
         function createStar() {
             const star = {
+                type: 'star',
                 x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                y: Math.random() * window.innerHeight * 0.5,
                 vx: (Math.random() - 0.5) * 2,
                 vy: (Math.random() - 0.5) * 2,
                 angle: Math.random() * Math.PI * 2,
                 rotation: Math.random() * 0.1,
                 life: 1,
-                size: Math.random() * 2 + 1,
-                type: 'star'
+                size: Math.random() * 2 + 1
             };
             particles.push(star);
         }
@@ -546,7 +551,7 @@
                 
                 p.x += p.vx;
                 p.y += p.vy;
-                p.vy += 0.1; // Gravidade
+                if (p.type === 'confetti') p.vy += 0.12; // Gravidade para confete
                 p.angle += p.rotation;
                 p.life -= 0.01;
 
@@ -613,7 +618,7 @@
             makeMove(clickedCellIndex, HUMAN);
             
             if (!checkGameOver(HUMAN)) {
-                statusText.textContent = "🌙 Lua pensando...";
+                statusText.textContent = "☀️ Sol pensando...";
                 isGameActive = false;
                 isAIThinking = true;
                 cells.forEach(cell => cell.classList.add('disabled'));
@@ -625,6 +630,8 @@
         function makeMove(index, player) {
             gameState[index] = player;
             cells[index].classList.add(player);
+            // Coloca o símbolo visual correto na célula
+            cells[index].textContent = player === 'sol' ? '☀️' : '🌙';
         }
 
         // Turno da IA com Minimax Imbatível
@@ -636,7 +643,7 @@
             cells.forEach(cell => cell.classList.remove('disabled'));
 
             if (!checkGameOver(AI)) {
-                statusText.textContent = "☀️ Sua vez";
+                statusText.textContent = "🌙 Sua vez";
                 isGameActive = true;
             }
         }
@@ -717,7 +724,7 @@
 
             if (gameWon) {
                 highlightWinningCells(winningCells);
-                const playerName = player === HUMAN ? "☀️ Sol" : "🌙 Lua";
+                const playerName = player === 'sol' ? "☀️ Sol" : "🌙 Lua";
                 statusText.textContent = `${playerName} venceu! 🎉`;
                 isGameActive = false;
                 
@@ -757,7 +764,7 @@
                 cell.textContent = '';
             });
 
-            statusText.textContent = "☀️ Sua vez";
+            statusText.textContent = "🌙 Sua vez";
         }
 
         // Limpar placar
