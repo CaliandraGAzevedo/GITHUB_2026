@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tetrix v2 - Refatorado</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 id="title">Tetrix v2</h1>
+    <div class="controls">
+      <label>Modo:
+        <select id="mode-select">
+          <option value="solo">Solo</option>
+          <option value="duelo">Duelo (Humano vs IA)</option>
+          <option value="dupla">Dupla (Humano + IA)</option>
+        </select>
+      </label>
+      <button id="start-btn">Iniciar v2</button>
+      <button id="pause-btn">Pausar</button>
+      <span id="timer">Tempo: 00:00</span>
+      <span id="score">Pontuação: 0</span>
+    </div>
+  </header>
+
+  <main>
+    <div id="boards">
+      <canvas id="board-canvas" width="240" height="480"></canvas>
+      <div id="side">
+        <canvas id="next-canvas" width="120" height="120"></canvas>
+        <div id="ai-status"></div>
+      </div>
+    </div>
+
+    <canvas id="effect-layer" width="800" height="600" class="overlay"></canvas>
+  </main>
+
+  <footer>
+    <p>Controles: ← → mover | ↑ rotacionar | ↓ soft drop | Espaço hard drop | P pausar | H assist IA</p>
+    <p>Esta versão é uma refatoração: motor em GameInstance, IA AsterixV2 (7-bag + expectimax aproximado) e som via WebAudio.</p>
+  </footer>
+
+  <script src="sound.js"></script>
+  <script src="ai_improved.js"></script>
+  <script src="game_instance.js"></script>
+  <script>
+    // bootstrap demo using GameInstance
+    const canvas = document.getElementById('board-canvas');
+    const nextCanvas = document.getElementById('next-canvas');
+    const effectCanvas = document.getElementById('effect-layer');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
+    const aiStatus = document.getElementById('ai-status');
+
+    const sound = new SoundEngine();
+    const asterix = new AsterixV2({depth:3, timeLimitMs:150});
+
+    const game = new GameInstance({
+      canvas, nextCanvas, effectCanvas, sound, ai: asterix,
+      onScore: s=> scoreEl.innerText = `Pontuação: ${s}`,
+      onTime: t=> timerEl.innerText = `Tempo: ${t}`,
+      onAIStatus: s=> aiStatus.innerText = s
+    });
+
+    document.getElementById('start-btn').addEventListener('click', ()=>game.start());
+    document.getElementById('pause-btn').addEventListener('click', ()=>game.togglePause());
+    document.getElementById('mode-select').addEventListener('change', e=> game.setMode(e.target.value));
+    window.addEventListener('keydown', e=> game.handleKey(e));
+
+  </script>
+</body>
+</html>

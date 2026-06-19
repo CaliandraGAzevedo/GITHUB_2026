@@ -1,0 +1,16 @@
+:root{
+  --bg:#071029; --panel:#0f1622; --accent:#ffcc33; --muted:#9fb0c8;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:Inter,Segoe UI,Arial;background:linear-gradient(180deg,#041026 0%,var(--bg) 100%);color:#e6eef6}
+header{display:flex;justify-content:space-between;align-items:center;padding:12px 24px}
+h1{margin:0;font-size:24px}
+.controls{display:flex;gap:12px;align-items:center}
+#boards{display:flex;gap:12px;padding:12px}
+canvas{background:var(--panel);border-radius:6px;box-shadow:0 6px 14px rgba(0,0,0,0.6)}
+#side{display:flex;flex-direction:column;gap:12px}
+.overlay{position:absolute;left:0;top:0;pointer-events:none}
+footer{padding:12px 24px;color:var(--muted)}
+button{background:var(--accent);border:none;padding:8px 12px;border-radius:6px;color:#111;font-weight:600;cursor:pointer}
+select,button{font-size:14px}
