@@ -289,9 +289,11 @@
             margin-top: 30px;
             z-index: 2;
             position: relative;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .reset-btn, .clear-scores-btn {
+        .reset-btn, .clear-scores-btn, .history-btn {
             padding: 14px 35px;
             font-size: 1rem;
             font-weight: 600;
@@ -306,7 +308,7 @@
             overflow: hidden;
         }
 
-        .reset-btn::before, .clear-scores-btn::before {
+        .reset-btn::before, .clear-scores-btn::before, .history-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -318,7 +320,7 @@
             z-index: -1;
         }
 
-        .reset-btn:hover::before, .clear-scores-btn:hover::before {
+        .reset-btn:hover::before, .clear-scores-btn:hover::before, .history-btn:hover::before {
             left: 100%;
         }
 
@@ -340,6 +342,162 @@
         .clear-scores-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(255, 107, 107, 0.5);
+        }
+
+        .history-btn {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            color: white;
+        }
+
+        .history-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.5);
+        }
+
+        /* Modal de Histórico */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1c2541, #0b132b);
+            margin: 5% auto;
+            padding: 30px;
+            border: 2px solid rgba(91, 192, 190, 0.5);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(91, 192, 190, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            color: var(--lua-color);
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(91, 192, 190, 0.5);
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--lua-color);
+        }
+
+        .history-stats {
+            background: rgba(108, 92, 231, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6c5ce7;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .history-entry {
+            background: rgba(60, 80, 107, 0.4);
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid var(--lua-color);
+            transition: all 0.3s ease;
+        }
+
+        .history-entry:hover {
+            background: rgba(60, 80, 107, 0.6);
+            transform: translateX(5px);
+        }
+
+        .history-entry.winner-entry {
+            border-left-color: var(--sol-color);
+            background: rgba(255, 188, 66, 0.1);
+        }
+
+        .history-time {
+            color: var(--lua-color);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .history-result {
+            margin-top: 8px;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .history-moves {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 8px;
+            border-radius: 5px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, #00b894, #55efc4);
+            color: #0b132b;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .export-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 184, 148, 0.5);
         }
 
         /* Easter Egg Canvas */
@@ -388,9 +546,15 @@
                 gap: 10px;
             }
 
-            .reset-btn, .clear-scores-btn {
+            .reset-btn, .clear-scores-btn, .history-btn {
                 padding: 12px 25px;
                 font-size: 0.9rem;
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20% auto;
             }
         }
     </style>
@@ -429,6 +593,20 @@
         <div class="buttons-container">
             <button class="reset-btn" id="resetBtn">🔄 Reiniciar Partida</button>
             <button class="clear-scores-btn" id="clearScoresBtn">🗑️ Limpar Placar</button>
+            <button class="history-btn" id="historyBtn">📊 Histórico (Agente Cali)</button>
+        </div>
+    </div>
+
+    <!-- Modal de Histórico -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🤖 Agente Cali - Histórico de Partidas</h2>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div id="statsContainer"></div>
+            <div id="historyList"></div>
+            <button class="export-btn" id="exportBtn">💾 Exportar como JSON</button>
         </div>
     </div>
 
@@ -440,6 +618,7 @@
         const statusText = document.getElementById('statusText');
         const resetBtn = document.getElementById('resetBtn');
         const clearScoresBtn = document.getElementById('clearScoresBtn');
+        const historyBtn = document.getElementById('historyBtn');
         const gameTitle = document.getElementById('gameTitle');
         const canvas = document.getElementById('easterEggCanvas');
         const ctx = canvas.getContext('2d');
@@ -450,16 +629,73 @@
         let gameState = ["", "", "", "", "", "", "", "", ""];
         let isGameActive = true;
         let isAIThinking = false;
+        let currentGameMoves = []; // Rastrear movimentos da partida atual
         
         let scores = { sol: 0, lua: 0 };
         let titleClicks = 0;
         let particles = [];
+        let gameHistory = []; // Histórico de todas as partidas - AGENTE CALI
+        let gameStartTime = Date.now();
 
         const winningConditions = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8],
             [0, 3, 6], [1, 4, 7], [2, 5, 8],
             [0, 4, 8], [2, 4, 6]
         ];
+
+        // ===== AGENTE CALI - SISTEMA DE MONITORAMENTO =====
+        class AgenteCalibani {
+            constructor() {
+                this.nome = "Cali";
+                this.inicializacao = new Date().toLocaleString('pt-BR');
+                this.totalAcessos = 0;
+                this.partidasProcessadas = 0;
+            }
+
+            registrarAcesso() {
+                this.totalAcessos++;
+            }
+
+            registrarPartida(resultado, vencedor, movimentos, tempoTotal) {
+                this.partidasProcessadas++;
+                
+                const partida = {
+                    id: this.partidasProcessadas,
+                    timestamp: new Date().toLocaleString('pt-BR'),
+                    data: new Date().toISOString(),
+                    resultado: resultado,
+                    vencedor: vencedor,
+                    movimentos: movimentos,
+                    placares: {
+                        sol: scores.sol,
+                        lua: scores.lua
+                    },
+                    tempoPartida: tempoPartida,
+                    boardFinal: [...gameState],
+                    placarAntesDaPartida: {
+                        sol: scores.sol - (vencedor === HUMAN ? 0 : (vencedor === AI ? 1 : 0)),
+                        lua: scores.lua - (vencedor === HUMAN ? 1 : (vencedor === AI ? 0 : 0))
+                    }
+                };
+
+                gameHistory.push(partida);
+                localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+                return partida;
+            }
+
+            obterRelatorio() {
+                return {
+                    agente: this.nome,
+                    inicializacao: this.inicializacao,
+                    totalAcessos: this.totalAcessos,
+                    partidasProcessadas: this.partidasProcessadas,
+                    placarTotal: scores,
+                    historico: gameHistory
+                };
+            }
+        }
+
+        const agenteCali = new AgenteCalibani();
 
         // Inicializar canvas
         function resizeCanvas() {
@@ -469,18 +705,119 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Inicializar placar do LocalStorage
+        // Inicializar placar e histórico do LocalStorage
         if (localStorage.getItem('ticTacToeScores')) {
             scores = JSON.parse(localStorage.getItem('ticTacToeScores'));
             document.getElementById('solScore').textContent = scores.sol;
             document.getElementById('luaScore').textContent = scores.lua;
         }
 
+        if (localStorage.getItem('gameHistory')) {
+            gameHistory = JSON.parse(localStorage.getItem('gameHistory'));
+            agenteCali.partidasProcessadas = gameHistory.length;
+        }
+
         // Eventos
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
         resetBtn.addEventListener('click', resetGame);
         clearScoresBtn.addEventListener('click', clearScores);
+        historyBtn.addEventListener('click', openHistory);
         gameTitle.addEventListener('click', handleTitleClick);
+
+        // Registrar acesso ao abrir a página
+        agenteCali.registrarAcesso();
+
+        // ===== MODAL DE HISTÓRICO =====
+        function openHistory() {
+            const modal = document.getElementById('historyModal');
+            const historyList = document.getElementById('historyList');
+            const statsContainer = document.getElementById('statsContainer');
+            
+            // Gerar estatísticas
+            let vitoriasLua = gameHistory.filter(g => g.vencedor === 'lua').length;
+            let vitoriasSOL = gameHistory.filter(g => g.vencedor === 'sol').length;
+            let empates = gameHistory.filter(g => g.vencedor === 'empate').length;
+            let tempoTotal = gameHistory.reduce((sum, g) => sum + g.tempoPartida, 0);
+            let tempoMedio = gameHistory.length > 0 ? Math.round(tempoTotal / gameHistory.length) : 0;
+
+            statsContainer.innerHTML = `
+                <div class="history-stats">
+                    <div style="font-weight: bold; color: var(--lua-color); margin-bottom: 10px;">📈 ESTATÍSTICAS GERAIS</div>
+                    <div class="stat-item">
+                        <span>Total de Partidas:</span>
+                        <span style="color: var(--sol-color);">${gameHistory.length}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🌙 Vitórias Lua (Você):</span>
+                        <span style="color: var(--lua-color);">${vitoriasLua}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>☀️ Vitórias Sol (IA):</span>
+                        <span style="color: var(--sol-color);">${vitoriasSOL}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>🤝 Empates:</span>
+                        <span style="color: #aaa;">${empates}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>⏱️ Tempo Total:</span>
+                        <span style="color: #aaa;">${tempoTotal}s</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>⏰ Tempo Médio/Partida:</span>
+                        <span style="color: #aaa;">${tempoMedio}s</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>👆 Total de Acessos:</span>
+                        <span style="color: var(--lua-color);">${agenteCali.totalAcessos}</span>
+                    </div>
+                </div>
+            `;
+            
+            if (gameHistory.length === 0) {
+                historyList.innerHTML = '<p style="text-align: center; color: rgba(255, 255, 255, 0.6);">Nenhuma partida registrada ainda.</p>';
+            } else {
+                historyList.innerHTML = gameHistory.map((game, index) => `
+                    <div class="history-entry ${game.vencedor !== 'empate' ? 'winner-entry' : ''}">
+                        <div class="history-time">⏰ Partida #${game.id} - ${game.timestamp}</div>
+                        <div class="history-result">
+                            ${game.vencedor === 'empate' 
+                                ? '🤝 <strong>EMPATE</strong>' 
+                                : `<strong>${game.vencedor === HUMAN ? '🌙 VOCÊ VENCEU' : '☀️ IA VENCEU'}</strong>`}
+                        </div>
+                        <div class="history-result">Placar: ☀️ ${game.placares.sol} x ${game.placares.lua} 🌙</div>
+                        <div class="history-moves"><strong>Movimentos:</strong> ${game.movimentos.join(' → ')}</div>
+                        <div class="history-moves"><strong>Tempo da Partida:</strong> ${game.tempoPartida}s</div>
+                    </div>
+                `).reverse().join('');
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        document.querySelector('.close-btn').addEventListener('click', function() {
+            document.getElementById('historyModal').style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('historyModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Exportar histórico como JSON
+        document.getElementById('exportBtn').addEventListener('click', function() {
+            const relatorio = agenteCali.obterRelatorio();
+            const dataStr = JSON.stringify(relatorio, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `historico_jogo_cali_${new Date().getTime()}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
 
         // Easter Egg - Confetes e Estrelas
         function handleTitleClick() {
@@ -608,6 +945,8 @@
 
         // Clique do jogador Humano
         function handleCellClick(e) {
+            agenteCali.registrarAcesso(); // Registra cada clique
+            
             if (isAIThinking || !isGameActive) return;
             
             const clickedCell = e.target;
@@ -616,6 +955,7 @@
             if (gameState[clickedCellIndex] !== "") return;
 
             makeMove(clickedCellIndex, HUMAN);
+            currentGameMoves.push(`Posição ${clickedCellIndex} - 🌙 Lua`);
             
             if (!checkGameOver(HUMAN)) {
                 statusText.textContent = "☀️ Sol pensando...";
@@ -630,7 +970,6 @@
         function makeMove(index, player) {
             gameState[index] = player;
             cells[index].classList.add(player);
-            // Coloca o símbolo visual correto na célula
             cells[index].textContent = player === 'sol' ? '☀️' : '🌙';
         }
 
@@ -638,6 +977,7 @@
         function aiTurn() {
             let bestMove = minimax(gameState, AI).index;
             makeMove(bestMove, AI);
+            currentGameMoves.push(`Posição ${bestMove} - ☀️ Sol`);
 
             isAIThinking = false;
             cells.forEach(cell => cell.classList.remove('disabled'));
@@ -733,6 +1073,11 @@
                 document.getElementById('solScore').textContent = scores.sol;
                 document.getElementById('luaScore').textContent = scores.lua;
                 
+                // Registrar partida no Agente Cali
+                let tempoPartida = Math.round((Date.now() - gameStartTime) / 1000);
+                let resultado = player === HUMAN ? 'vitoria_lua' : 'vitoria_sol';
+                agenteCali.registrarPartida(resultado, player, currentGameMoves, tempoPartida);
+                
                 return true;
             }
 
@@ -740,6 +1085,10 @@
             if (gameState.every(cell => cell !== "")) {
                 statusText.textContent = "Empate! 🤝";
                 isGameActive = false;
+                
+                let tempoPartida = Math.round((Date.now() - gameStartTime) / 1000);
+                agenteCali.registrarPartida('empate', 'empate', currentGameMoves, tempoPartida);
+                
                 return true;
             }
 
@@ -758,6 +1107,8 @@
             isGameActive = true;
             isAIThinking = false;
             titleClicks = 0;
+            currentGameMoves = [];
+            gameStartTime = Date.now();
             
             cells.forEach(cell => {
                 cell.classList.remove('sol', 'lua', 'winner-cell', 'disabled');
@@ -765,6 +1116,7 @@
             });
 
             statusText.textContent = "🌙 Sua vez";
+            agenteCali.registrarAcesso();
         }
 
         // Limpar placar
